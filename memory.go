@@ -60,3 +60,15 @@ func (m *Memory) FetchMany(addr uint16, size int) ([]byte, error) {
 
 	return m.mem[addr : int(addr)+size], nil
 }
+
+func (m *Memory) StoreMany(addr uint16, data []byte) error {
+	if int(addr)+len(data) >= len(m.mem) {
+		return fmt.Errorf("%w: %d", ErrInvalidAddress, addr)
+	}
+
+	for i := 0; i < len(data); i++ {
+		m.mem[int(addr)+i] = data[i]
+	}
+
+	return nil
+}
