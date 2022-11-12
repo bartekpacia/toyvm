@@ -27,7 +27,7 @@ func NewVM() *VM {
 	}
 
 	return &VM{
-		memory:     &Memory{},
+		memory:     &Memory{mem: make([]byte, 64*1024)}, // 64KB
 		registers:  registers,
 		pc:         &registers[14],
 		sp:         &registers[15],

@@ -7,13 +7,14 @@ import (
 
 var ErrInvalidAddress = errors.New("invalid address")
 
+// Memory represents little-endian RAM memory.
 type Memory struct {
-	mem [64 * 1024]byte
+	mem []byte
 }
 
 func (m *Memory) StoreByte(addr uint16, value byte) error {
 	if int(addr) >= len(m.mem) {
-		fmt.Errorf("%w: %d", ErrInvalidAddress, addr)
+		return fmt.Errorf("%w: %d", ErrInvalidAddress, addr)
 	}
 
 	m.mem[int(addr)] = value
@@ -28,16 +29,17 @@ func (m *Memory) FetchByte(addr uint16) (byte, error) {
 	return m.mem[addr], nil
 }
 
-func (m *Memory) FetchDword(addr uint16) (byte, error) {
+func (m *Memory) FetchDword(addr uint16) (uint32, error) {
 	if int(addr)+3 >= len(m.mem) {
 		return 0, fmt.Errorf("%w: %d", ErrInvalidAddress, addr)
 	}
 
-	return m.mem[addr] |
-			m.mem[addr+1]<<8 |
-			m.mem[addr+2]<<16 |
-			m.mem[addr+3]<<24,
-		nil
+	var value uint32
+	value = uint32(m.mem[addr])
+	value = value | uint32(m.mem[addr+1])<<8
+	value = value | uint32(m.mem[addr+2])<<16
+	value = value | uint32(m.mem[addr+3])<<24
+	return value, nil
 }
 
 func (m *Memory) StoreDword(addr uint16, value uint32) error {
@@ -45,10 +47,10 @@ func (m *Memory) StoreDword(addr uint16, value uint32) error {
 		return fmt.Errorf("%w: %d", ErrInvalidAddress, addr)
 	}
 
-	m.mem[int(addr)] = byte(value & 0xff)
-	m.mem[int(addr)+1] = byte((value >> 8) & 0xff)
-	m.mem[int(addr)+2] = byte((value >> 16) & 0xff)
-	m.mem[int(addr)+3] = byte((value >> 24) & 0xff)
+	m.mem[int(addr)] = byte(value)
+	m.mem[int(addr)+1] = byte((value >> 8))
+	m.mem[int(addr)+2] = byte((value >> 16))
+	m.mem[int(addr)+3] = byte((value >> 24))
 
 	return nil
 }
