@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/bartekpacia/vm"
+	"github.com/bartekpacia/minivm/vm"
 )
 
 func main() {

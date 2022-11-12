@@ -1,3 +1,3 @@
-module github.com/bartekpacia/vm
+module github.com/bartekpacia/minivm
 
 go 1.19
