@@ -1,5 +1,7 @@
 package vm
 
+//lint:file-ignore ST1020 documentation for instructions is in the book
+
 type InstructionHandler func(vm *VM, args []byte)
 
 type opcode struct {
@@ -9,25 +11,31 @@ type opcode struct {
 
 // data copying instructions
 
-// move
+// mov
 func VMOV(vm *VM, args []byte) {
-	vm.registers[args[0]].value = vm.registers[args[1]].value
+	vm.reg[args[0]].value = vm.reg[args[1]].value
 }
 
 // set
 func VSET(vm *VM, args []byte) {
-	vm.registers[args[0]].value = 0 // TODO: to_dd(args[1:1 + 4])
+	var value uint32
+	value = uint32(args[1])
+	value = value | uint32(args[2])<<8
+	value = value | uint32(args[3])<<16
+	value = value | uint32(args[4])<<24
+
+	vm.reg[args[0]].value = value
 }
 
 // load
 func VLD(vm *VM, args []byte) {
-	addr := vm.registers[args[1]].value
+	addr := vm.reg[args[1]].value
 	data, err := vm.memory.FetchDword(uint16(addr))
 	if err != nil {
 		vm.interrupt(IntMemoryError)
 		return
 	}
-	vm.registers[args[0]].value = data
+	vm.reg[args[0]].value = data
 }
 
 // store
