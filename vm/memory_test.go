@@ -23,11 +23,11 @@ func TestStoreByte(t *testing.T) {
 
 		err := memory.StoreByte(tc.addr, tc.value)
 		if !errors.Is(err, tc.wantErr) {
-			t.Fatalf("want %#v, got %#v", tc.wantErr, err)
+			t.Errorf("want %#v, got %#v", tc.wantErr, err)
 		}
 
 		if !bytes.Equal(memory.mem, tc.want) {
-			t.Fatalf("want %v, got %v", tc.want, memory.mem)
+			t.Errorf("want %v, got %v", tc.want, memory.mem)
 		}
 	}
 }
@@ -47,11 +47,11 @@ func TestFetchByte(t *testing.T) {
 	for _, tc := range testCases {
 		got, err := tc.mem.FetchByte(tc.addr)
 		if !errors.Is(err, tc.wantErr) {
-			t.Fatalf("want %#v, got %#v", tc.wantErr, err)
+			t.Errorf("got %#v, want %#v", err, tc.wantErr)
 		}
 
 		if got != tc.want {
-			t.Fatalf("want %v, got %v", tc.want, got)
+			t.Errorf("got %v, want %v", got, tc.want)
 		}
 	}
 }
@@ -72,11 +72,11 @@ func TestFetchDword(t *testing.T) {
 	for _, tc := range testCases {
 		got, err := tc.mem.FetchDword(tc.addr)
 		if !errors.Is(err, tc.wantErr) {
-			t.Fatalf("want %#v, got %#v", tc.wantErr, err)
+			t.Errorf("got %#v, want %#v", err, tc.wantErr)
 		}
 
 		if got != tc.want {
-			t.Fatalf("want %v, got %v", tc.want, got)
+			t.Errorf("got %v, want %v", got, tc.want)
 		}
 	}
 }
@@ -99,11 +99,11 @@ func TestStoreDword(t *testing.T) {
 
 		err := memory.StoreDword(tc.addr, tc.value)
 		if !errors.Is(err, tc.wantErr) {
-			t.Fatalf("want %#v, got %#v", tc.wantErr, err)
+			t.Errorf("got %#v, want %#v", err, tc.wantErr)
 		}
 
 		if !bytes.Equal(memory.mem, tc.want) {
-			t.Fatalf("want %v, got %v", tc.want, memory.mem)
+			t.Errorf("got %v, want %v", memory.mem, tc.want)
 		}
 	}
 }
