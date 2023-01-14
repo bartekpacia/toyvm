@@ -1,4 +1,4 @@
-# minivm
+# toy vm
 
 Pure Go implementation of a small virtual machine described in [Gynvael
 Coldwind's book][book].
