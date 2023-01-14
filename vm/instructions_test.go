@@ -4,30 +4,30 @@ import (
 	"testing"
 )
 
-// func TestVmov(t *testing.T) {
-// 	testCases := []struct {
-// 		desc   string
-// 		seed   func(*VM)
-// 		args   []byte
-// 		verify func(*VM) bool
-// 	}{
-// 		{
-// 			desc:   "copy value of R5 to R2",
-// 			seed:   func(vm *VM) { vm.reg[4].value = 1 },
-// 			args:   []byte{2, 5},
-// 			verify: func(vm *VM) bool { return vm.reg[1].value == 1 },
-// 		},
-// 	}
+func TestVmov(t *testing.T) {
+	testCases := []struct {
+		desc   string
+		seed   func(*VM)
+		args   []byte
+		verify func(*VM) bool
+	}{
+		{
+			desc:   "copy value of R4 to R1",
+			seed:   func(vm *VM) { vm.reg[4].value = 1 },
+			args:   []byte{1, 4},
+			verify: func(vm *VM) bool { return vm.reg[1].value == 1 },
+		},
+	}
 
-// 	for _, tc := range testCases {
-// 		vm := NewVM()
-// 		tc.seed(vm)
-// 		VMOV(vm, tc.args)
-// 		if !tc.verify(vm) {
-// 			t.Fatalf("%s failed", tc.desc)
-// 		}
-// 	}
-// }
+	for _, tc := range testCases {
+		vm := NewVM()
+		tc.seed(vm)
+		VMOV(vm, tc.args)
+		if !tc.verify(vm) {
+			t.Errorf("%s failed", tc.desc)
+		}
+	}
+}
 
 func TestVset(t *testing.T) {
 	testCases := []struct {
