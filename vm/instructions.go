@@ -78,17 +78,23 @@ func VMOD(vm *VM, args []byte) {
 
 // or
 func VOR(vm *VM, args []byte) {
+	rdst := &vm.reg[args[0]]
+	rsrc := &vm.reg[args[1]]
+	rdst.value = rdst.value | rsrc.value
 }
 
 // and
 func VAND(vm *VM, args []byte) {
+	rdst := &vm.reg[args[0]]
+	rsrc := &vm.reg[args[1]]
+	rdst.value = rdst.value & rsrc.value
 }
 
 // xor
 func VXOR(vm *VM, args []byte) {
 	rdst := &vm.reg[args[0]]
 	rsrc := &vm.reg[args[1]]
-	rdst.value = rdst.value | rsrc.value
+	rdst.value = rdst.value ^ rsrc.value
 }
 
 // not
