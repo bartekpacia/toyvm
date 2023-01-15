@@ -147,6 +147,17 @@ func VSHR(vm *VM, args []byte) {
 
 // compare
 func VCMP(vm *VM, args []byte) {
+	rdst := &vm.reg[args[0]]
+	rsrc := &vm.reg[args[1]]
+
+	result := int(rdst.value) - int(rsrc.value)
+	vm.fr &= 0xfffffffc
+
+	if result == 0 {
+		vm.fr |= FlagZF
+	} else if result < 0 {
+		vm.fr |= FlagCF
+	}
 }
 
 // jump if zero

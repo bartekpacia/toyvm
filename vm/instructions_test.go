@@ -226,3 +226,55 @@ func TestVnot(t *testing.T) {
 		t.Errorf("got %b, want %b", got, want)
 	}
 }
+
+func TestVshl(t *testing.T) {
+}
+
+func TestVshr(t *testing.T) {
+}
+
+func TestVcmp(t *testing.T) {
+	testCases := []struct {
+		desc   string
+		seed   func(*VM)
+		args   []byte
+		verify func(*VM) bool
+	}{
+		{
+			desc: "nothing happens when the subtraction result is positive",
+			seed: func(vm *VM) {
+				vm.reg[0].value = 8
+				vm.reg[1].value = 5
+			},
+			args:   []byte{0, 1},
+			verify: func(vm *VM) bool { return vm.fr == 0 },
+		},
+		{
+			desc: "zero flag is set when the subtraction result equals 0",
+			seed: func(vm *VM) {
+				vm.reg[0].value = 5
+				vm.reg[1].value = 5
+			},
+			args:   []byte{0, 1},
+			verify: func(vm *VM) bool { return vm.fr == FlagZF },
+		},
+		{
+			desc: "carry flag is set when the subtraction result is negative",
+			seed: func(vm *VM) {
+				vm.reg[0].value = 0
+				vm.reg[1].value = 5
+			},
+			args:   []byte{0, 1},
+			verify: func(vm *VM) bool { return vm.fr == FlagCF },
+		},
+	}
+
+	for _, tc := range testCases {
+		vm := NewVM()
+		tc.seed(vm)
+		VCMP(vm, tc.args)
+		if !tc.verify(vm) {
+			t.Errorf("test %#v failed", tc.desc)
+		}
+	}
+}

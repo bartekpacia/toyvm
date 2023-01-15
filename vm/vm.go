@@ -14,7 +14,7 @@ type gpRegister struct {
 
 const (
 	FlagZF = iota + 1 // zero flag
-	FlagCF = iota     // carry flag
+	FlagCF            // carry flag
 )
 
 const (
