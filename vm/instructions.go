@@ -58,22 +58,43 @@ func VSTB(vm *VM, args []byte) {
 
 // add
 func VADD(vm *VM, args []byte) {
+	rdst := &vm.reg[args[0]]
+	rsrc := &vm.reg[args[1]]
+	rdst.value = rdst.value + rsrc.value
 }
 
 // subtract
 func VSUB(vm *VM, args []byte) {
+	rdst := &vm.reg[args[0]]
+	rsrc := &vm.reg[args[1]]
+	rdst.value = rdst.value - rsrc.value
 }
 
 // multiply
 func VMUL(vm *VM, args []byte) {
+	rdst := &vm.reg[args[0]]
+	rsrc := &vm.reg[args[1]]
+	rdst.value = rdst.value * rsrc.value
 }
 
 // divide
 func VDIV(vm *VM, args []byte) {
+	rdst := &vm.reg[args[0]]
+	rsrc := &vm.reg[args[1]]
+
+	if rsrc.value == 0 {
+		vm.interrupt(IntDivisionError)
+		return
+	}
+
+	rdst.value = rdst.value / rsrc.value
 }
 
 // modulo
 func VMOD(vm *VM, args []byte) {
+	rdst := &vm.reg[args[0]]
+	rsrc := &vm.reg[args[1]]
+	rdst.value = rdst.value % rsrc.value
 }
 
 // or

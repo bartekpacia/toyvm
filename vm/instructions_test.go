@@ -91,6 +91,71 @@ func TestVst(t *testing.T) {
 	}
 }
 
+func TestVadd(t *testing.T) {
+	vm := NewVM()
+	vm.reg[0].value = 5
+	vm.reg[1].value = 8
+
+	VADD(vm, []byte{0, 1})
+	got := vm.reg[0].value
+	var want uint32 = 13
+	if got != want {
+		t.Errorf("got %d, want %d", got, want)
+	}
+}
+
+func TestVsub(t *testing.T) {
+	vm := NewVM()
+	vm.reg[0].value = 37
+	vm.reg[1].value = 21
+
+	VSUB(vm, []byte{0, 1})
+	got := vm.reg[0].value
+	var want uint32 = 16
+	if got != want {
+		t.Errorf("got %d, want %d", got, want)
+	}
+}
+
+func TestVmul(t *testing.T) {
+	vm := NewVM()
+	vm.reg[0].value = 5
+	vm.reg[1].value = 8
+
+	VMUL(vm, []byte{0, 1})
+	got := vm.reg[0].value
+	var want uint32 = 40
+	if got != want {
+		t.Errorf("got %d, want %d", got, want)
+	}
+}
+
+func TestVdiv(t *testing.T) {
+	vm := NewVM()
+	vm.reg[0].value = 40
+	vm.reg[1].value = 8
+
+	VDIV(vm, []byte{0, 1})
+	got := vm.reg[0].value
+	var want uint32 = 5
+	if got != want {
+		t.Errorf("got %d, want %d", got, want)
+	}
+}
+
+func TestVdivInterrupt(t *testing.T) {
+	vm := NewVM()
+	vm.reg[0].value = 40
+	vm.reg[1].value = 0
+
+	VDIV(vm, []byte{0, 1})
+	got := vm.interruptQueue[0]
+	want := IntDivisionError
+	if got != want {
+		t.Errorf("got %d, want %d", got, want)
+	}
+}
+
 func TestVor(t *testing.T) {
 	vm := NewVM()
 	vm.reg[0].value = 0b010101
