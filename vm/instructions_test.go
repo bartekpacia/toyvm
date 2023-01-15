@@ -90,3 +90,16 @@ func TestVst(t *testing.T) {
 		t.Errorf("got %x, want %x", got, want)
 	}
 }
+
+func TestXor(t *testing.T) {
+	vm := NewVM()
+	vm.reg[0].value = 0b010101
+	vm.reg[1].value = 0b100101
+	var want uint32 = 0b110101
+
+	VXOR(vm, []byte{0, 1})
+	got := vm.reg[0].value
+	if got != want {
+		t.Errorf("got %b, want %b", got, want)
+	}
+}

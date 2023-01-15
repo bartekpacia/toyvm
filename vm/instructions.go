@@ -86,6 +86,9 @@ func VAND(vm *VM, args []byte) {
 
 // xor
 func VXOR(vm *VM, args []byte) {
+	rdst := &vm.reg[args[0]]
+	rsrc := &vm.reg[args[1]]
+	rdst.value = rdst.value | rsrc.value
 }
 
 // not
