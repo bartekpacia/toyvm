@@ -93,6 +93,8 @@ func VXOR(vm *VM, args []byte) {
 
 // not
 func VNOT(vm *VM, args []byte) {
+	rdst := &vm.reg[args[0]]
+	rdst.value = ^rdst.value
 }
 
 // shift left

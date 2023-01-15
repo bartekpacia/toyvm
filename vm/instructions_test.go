@@ -91,7 +91,7 @@ func TestVst(t *testing.T) {
 	}
 }
 
-func TestXor(t *testing.T) {
+func TestVxor(t *testing.T) {
 	vm := NewVM()
 	vm.reg[0].value = 0b010101
 	vm.reg[1].value = 0b100101
@@ -99,6 +99,20 @@ func TestXor(t *testing.T) {
 
 	VXOR(vm, []byte{0, 1})
 	got := vm.reg[0].value
+	if got != want {
+		t.Errorf("got %b, want %b", got, want)
+	}
+}
+
+func TestVnot(t *testing.T) {
+	vm := NewVM()
+	rdst := &vm.reg[0]
+
+	rdst.value = 0b101010
+	var want uint32 = 0b11111111111111111111111111010101
+
+	VNOT(vm, []byte{0})
+	got := rdst.value
 	if got != want {
 		t.Errorf("got %b, want %b", got, want)
 	}
