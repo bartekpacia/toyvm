@@ -67,3 +67,26 @@ func TestVld(t *testing.T) {
 		t.Errorf("got %x, want %x", got, want)
 	}
 }
+
+func TestVst(t *testing.T) {
+	vm := NewVM()
+	vm.memory.mem[3] = 0x12
+	vm.memory.mem[4] = 0x34
+	vm.memory.mem[5] = 0x56
+	vm.memory.mem[6] = 0x78
+
+	var want uint32 = 0x12345678
+	vm.reg[9].value = 0x1234
+	vm.reg[5].value = want
+
+	VST(vm, []byte{9, 5})
+	var got uint32
+	got = got | uint32(vm.memory.mem[0x1234])
+	got = got | uint32(vm.memory.mem[0x1235])<<8
+	got = got | uint32(vm.memory.mem[0x1236])<<16
+	got = got | uint32(vm.memory.mem[0x1237])<<24
+
+	if got != want {
+		t.Errorf("got %x, want %x", got, want)
+	}
+}

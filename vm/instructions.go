@@ -40,6 +40,10 @@ func VLD(vm *VM, args []byte) {
 
 // store
 func VST(vm *VM, args []byte) {
+	dst := vm.reg[args[0]].value
+	src := vm.reg[args[1]].value
+
+	vm.memory.StoreDword(uint16(dst), src)
 }
 
 // load byte
