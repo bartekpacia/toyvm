@@ -91,6 +91,24 @@ func TestVst(t *testing.T) {
 	}
 }
 
+func TestVldb(t *testing.T) {
+	vm := NewVM()
+
+	vm.reg[4].value = 0x1234
+	var data byte = 0x12
+	vm.memory.mem[0x1234] = data
+
+	VLDB(vm, []byte{1, 4})
+	if len(vm.interruptQueue) != 0 {
+		t.Error("there is an interrupt")
+	}
+
+	got := vm.reg[1].value
+	if got != uint32(data) {
+		t.Errorf("got %x, want %x", got, data)
+	}
+}
+
 func TestVadd(t *testing.T) {
 	vm := NewVM()
 	vm.reg[0].value = 5

@@ -40,14 +40,25 @@ func VLD(vm *VM, args []byte) {
 
 // store
 func VST(vm *VM, args []byte) {
-	dst := vm.reg[args[0]].value
-	src := vm.reg[args[1]].value
-
-	vm.memory.StoreDword(uint16(dst), src)
+	rdst := &vm.reg[args[0]]
+	rsrc := &vm.reg[args[1]]
+	err := vm.memory.StoreDword(uint16(rdst.value), rsrc.value)
+	if err != nil {
+		vm.interrupt(IntMemoryError)
+	}
 }
 
 // load byte
 func VLDB(vm *VM, args []byte) {
+	rdst := &vm.reg[args[0]]
+	rsrc := &vm.reg[args[1]]
+	b, err := vm.memory.FetchByte(uint16(rsrc.value))
+	if err != nil {
+		vm.interrupt(IntMemoryError)
+		return
+	}
+
+	rdst.value = uint32(b)
 }
 
 // store byte
