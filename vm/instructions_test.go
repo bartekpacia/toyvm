@@ -4,6 +4,8 @@ import (
 	"testing"
 )
 
+//region Data copying instructions
+
 func TestVmov(t *testing.T) {
 	testCases := []struct {
 		desc   string
@@ -108,6 +110,12 @@ func TestVldb(t *testing.T) {
 		t.Errorf("got %x, want %x", got, data)
 	}
 }
+
+// TODO: TestVstb
+
+//endregion
+
+//region Arithmetic and logic instructions
 
 func TestVadd(t *testing.T) {
 	vm := NewVM()
@@ -233,6 +241,10 @@ func TestVshl(t *testing.T) {
 func TestVshr(t *testing.T) {
 }
 
+//endregion
+
+//region Comparison and conditional jumps instructions
+
 func TestVcmp(t *testing.T) {
 	testCases := []struct {
 		desc   string
@@ -278,3 +290,5 @@ func TestVcmp(t *testing.T) {
 		}
 	}
 }
+
+//endregion

@@ -110,7 +110,7 @@ func (vm *VM) fetchPendingInterrupt() *int {
 		return nil
 	}
 
-	// In disable-interrupts state we can process only non-maskable interrupts
+	// In disable-interrupts state, we can process only non-maskable interrupts
 	// (faults).
 	if vm.creg[CregIntContrl]&1 == 0 {
 		// Maskable interrupts disabled. Find a non-maskable one.
@@ -219,21 +219,25 @@ func (vm *VM) runSingleStep() error {
 func (vm *VM) LoadMemoryFromFile(addr uint16, filename string) error {
 	data, err := os.ReadFile(filename)
 	if err != nil {
-		return fmt.Errorf("failed to read code from file %s: %w", filename, err)
+		return fmt.Errorf("read code from file %s: %w", filename, err)
 	}
 
 	err = vm.memory.StoreMany(addr, data)
 	if err != nil {
-		return fmt.Errorf("failed to load code to memory: %w", err)
+		return fmt.Errorf("store data at address %d: %w", addr, err)
 	}
 
 	return nil
 }
 
-func (vm *VM) Run() {
+func (vm *VM) Run() error {
 	for !vm.terminated {
-		vm.runSingleStep()
+		err := vm.runSingleStep()
+		if err != nil {
+			return fmt.Errorf("run single step: %v", err)
+		}
 	}
 
 	// vm.devConsole.terminate() vm.devPIT.terminate()
+	return nil
 }

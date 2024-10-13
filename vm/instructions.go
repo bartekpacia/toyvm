@@ -4,12 +4,12 @@ package vm
 
 type InstructionHandler func(vm *VM, args []byte)
 
+//region Data copying instructions
+
 type opcode struct {
 	handler InstructionHandler
 	length  int
 }
-
-// data copying instructions
 
 // mov
 func VMOV(vm *VM, args []byte) {
@@ -65,7 +65,9 @@ func VLDB(vm *VM, args []byte) {
 func VSTB(vm *VM, args []byte) {
 }
 
-// arithmetic and logic instructions
+//endregion
+
+//region Arithmetic and logic instructions
 
 // add
 func VADD(vm *VM, args []byte) {
@@ -143,7 +145,9 @@ func VSHL(vm *VM, args []byte) {
 func VSHR(vm *VM, args []byte) {
 }
 
-// comparison and conditional jumps instructions
+//endregion
+
+//region Comparison and conditional jumps instructions
 
 // compare
 func VCMP(vm *VM, args []byte) {
@@ -200,7 +204,9 @@ func VJBE(vm *VM, args []byte) {
 func VJA(vm *VM, args []byte) {
 }
 
-// stack manipulation instructions
+//endregion
+
+//region Stack manipulation instructions
 
 // push
 func VPUSH(vm *VM, args []byte) {
@@ -210,7 +216,9 @@ func VPUSH(vm *VM, args []byte) {
 func VPOP(vm *VM, args []byte) {
 }
 
-// unconditional jumps instructions
+//endregion
+
+//region Unconditional jumps instructions
 
 // jump
 func VJMP(vm *VM, args []byte) {
@@ -232,7 +240,9 @@ func VCALLR(vm *VM, args []byte) {
 func VRET(vm *VM, args []byte) {
 }
 
-// additional instructions
+//endregion
+
+//region Additional instructions
 
 // control register load
 func VCRL(vm *VM, args []byte) {
@@ -310,3 +320,5 @@ var opcodes = map[byte]opcode{
 	0xFE: {handler: VCRSH, length: 0},
 	0xFF: {handler: VOFF, length: 0},
 }
+
+//endregion

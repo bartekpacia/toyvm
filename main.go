@@ -1,19 +1,27 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/bartekpacia/toyvm/vm"
 )
 
 func main() {
+	log.SetFlags(0)
+
 	if len(os.Args) != 2 {
-		fmt.Fprintln(os.Stderr, "usage: vm <source file>")
-		os.Exit(1)
+		log.Fatalln("usage: vm <source file>")
 	}
 
 	machine := vm.NewVM()
-	machine.LoadMemoryFromFile(0, os.Args[1])
-	machine.Run()
+	err := machine.LoadMemoryFromFile(0, os.Args[1])
+	if err != nil {
+		log.Fatalln("failed to load memory from file: ", err)
+	}
+
+	err = machine.Run()
+	if err != nil {
+		log.Fatalln("error while running virtual machine: ", err)
+	}
 }
