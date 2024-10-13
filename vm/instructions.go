@@ -139,10 +139,12 @@ func VNOT(vm *VM, args []byte) {
 
 // shift left
 func VSHL(vm *VM, args []byte) {
+	// TODO: Implement VSHL
 }
 
 // shift right
 func VSHR(vm *VM, args []byte) {
+	// TODO: Implement VSHR
 }
 
 //endregion
@@ -166,42 +168,51 @@ func VCMP(vm *VM, args []byte) {
 
 // jump if zero
 func VJZ(vm *VM, args []byte) {
+	// TODO: Implement VJZ
 }
 
 // jump if equal
 func VJE(vm *VM, args []byte) {
+	// TODO: Implement VJE
 }
 
 // jump if not zero
 func VJNZ(vm *VM, args []byte) {
+	// TODO: Implement VJNZ
 }
 
-// jump if not equal
 func VJNE(vm *VM, args []byte) {
+	// TODO: implement VJNE
 }
 
 // jump if carry
 func VJC(vm *VM, args []byte) {
+	// TODO: Implement VJC
 }
 
 // jump if below
 func VJB(vm *VM, args []byte) {
+	// TODO: Implement VJB
 }
 
 // jump if not carry
 func VJNC(vm *VM, args []byte) {
+	// TODO: Implement VJNC
 }
 
 // jump if above or equal
 func VJAE(vm *VM, args []byte) {
+	// TODO: Implement VJAE
 }
 
 // jump if below or equal
 func VJBE(vm *VM, args []byte) {
+	// TODO: Implement VJBE
 }
 
 // jump if above
 func VJA(vm *VM, args []byte) {
+	// TODO: Implement VJA
 }
 
 //endregion
@@ -210,10 +221,12 @@ func VJA(vm *VM, args []byte) {
 
 // push
 func VPUSH(vm *VM, args []byte) {
+	// TODO: Implement VPUSH
 }
 
 // pop
 func VPOP(vm *VM, args []byte) {
+	// TODO: Implement VPOP
 }
 
 //endregion
@@ -222,22 +235,27 @@ func VPOP(vm *VM, args []byte) {
 
 // jump
 func VJMP(vm *VM, args []byte) {
+	// TODO: Implement VJMP
 }
 
 // jump to address from register
 func VJMPR(vm *VM, args []byte) {
+	// TODO: Implement VJMPR
 }
 
 // call
 func VCALL(vm *VM, args []byte) {
+	// TODO: Implement VCALL
 }
 
 // call an address from register
 func VCALLR(vm *VM, args []byte) {
+	// TODO: Implement VCALLR
 }
 
 // return
 func VRET(vm *VM, args []byte) {
+	// TODO: Implement VRET
 }
 
 //endregion
@@ -246,22 +264,27 @@ func VRET(vm *VM, args []byte) {
 
 // control register load
 func VCRL(vm *VM, args []byte) {
+	// TODO: Implement VCRL
 }
 
 // control register store
 func VCRS(vm *VM, args []byte) {
+	// TODO: Implement VCRS
 }
 
 // output byte
 func VOUTB(vm *VM, args []byte) {
+	// TODO: Implement VOUTB
 }
 
 // input byte
 func VINB(vm *VM, args []byte) {
+	// TODO: Implement VINB
 }
 
 // interrupt return
 func VIRET(vm *VM, args []byte) {
+	// TODO: Implement VIRET
 }
 
 // crash
