@@ -1,0 +1,22 @@
+The attached PDF document contains a few tables of opcodes for a fictional
+virtual machine. It's in Polish.
+
+I ask you to do the following:
+- for each table, create a new Markdown heading and a Markdown table underneath
+- for each opcode, create a new row in the Markdown table with the following
+  columns:
+ - the opcode
+ - mnemonic
+ - mnemonic name in plain English (**in bold**)
+ - parameters (or none)
+ - the full description
+
+In the full description cell, try to preserve the structure and formatting of the input PDF (but translate it to English).
+It doesn't have to be perfect, but please wrap code with `backticks` and respect newlines.
+
+The document contains 6 tables. For now, focus only on the first one.
+
+---
+
+Gemini's output was always cut at some random point, and what helped was instructing it to only output n-th table at
+once. I had to repeat the process 6 times, but at least it worked.
