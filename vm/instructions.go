@@ -7,8 +7,9 @@ type InstructionHandler func(vm *VM, args []byte)
 //region Data copying instructions
 
 type opcode struct {
-	handler InstructionHandler
-	length  int
+	handler  InstructionHandler
+	length   int
+	mnemonic string
 }
 
 // mov
@@ -323,49 +324,49 @@ func VOFF(vm *VM, args []byte) {
 
 var opcodes = map[byte]opcode{
 	// data copying instructions
-	0x00: {handler: VMOV, length: 1 + 1},
-	0x01: {handler: VSET, length: 1 + 4},
-	0x02: {handler: VLD, length: 1 + 1},
-	0x03: {handler: VST, length: 1 + 1},
-	0x04: {handler: VLDB, length: 1 + 1},
-	0x05: {handler: VSTB, length: 1 + 1},
+	0x00: {handler: VMOV, length: 1 + 1, mnemonic: "MOV"},
+	0x01: {handler: VSET, length: 1 + 4, mnemonic: "SET"},
+	0x02: {handler: VLD, length: 1 + 1, mnemonic: "LD"},
+	0x03: {handler: VST, length: 1 + 1, mnemonic: "ST"},
+	0x04: {handler: VLDB, length: 1 + 1, mnemonic: "LDB"},
+	0x05: {handler: VSTB, length: 1 + 1, mnemonic: "STB"},
 	// arithmetic and logic instructions
-	0x10: {handler: VADD, length: 1 + 1},
-	0x11: {handler: VSUB, length: 1 + 1},
-	0x12: {handler: VMUL, length: 1 + 1},
-	0x13: {handler: VDIV, length: 1 + 1},
-	0x14: {handler: VMOD, length: 1 + 1},
-	0x15: {handler: VOR, length: 1 + 1},
-	0x16: {handler: VAND, length: 1 + 1},
-	0x17: {handler: VXOR, length: 1 + 1},
-	0x18: {handler: VNOT, length: 1},
-	0x19: {handler: VSHL, length: 1 + 1},
-	0x1A: {handler: VSHR, length: 1 + 1},
+	0x10: {handler: VADD, length: 1 + 1, mnemonic: "ADD"},
+	0x11: {handler: VSUB, length: 1 + 1, mnemonic: "SUB"},
+	0x12: {handler: VMUL, length: 1 + 1, mnemonic: "MUL"},
+	0x13: {handler: VDIV, length: 1 + 1, mnemonic: "DIV"},
+	0x14: {handler: VMOD, length: 1 + 1, mnemonic: "MOD"},
+	0x15: {handler: VOR, length: 1 + 1, mnemonic: "OR"},
+	0x16: {handler: VAND, length: 1 + 1, mnemonic: "AND"},
+	0x17: {handler: VXOR, length: 1 + 1, mnemonic: "XOR"},
+	0x18: {handler: VNOT, length: 1, mnemonic: "NOT"},
+	0x19: {handler: VSHL, length: 1 + 1, mnemonic: "SHL"},
+	0x1A: {handler: VSHR, length: 1 + 1, mnemonic: "SHR"},
 	// comparison and conditional jumps instructions
-	0x20: {handler: VCMP, length: 1 + 1},
-	0x21: {handler: VJZ, length: 2},
-	0x22: {handler: VJNZ, length: 2},
-	0x23: {handler: VJC, length: 2},
-	0x24: {handler: VJNC, length: 2},
-	0x25: {handler: VJBE, length: 2},
-	0x26: {handler: VJA, length: 2},
+	0x20: {handler: VCMP, length: 1 + 1, mnemonic: "CMP"},
+	0x21: {handler: VJZ, length: 2, mnemonic: "JZ"},
+	0x22: {handler: VJNZ, length: 2, mnemonic: "JNZ"},
+	0x23: {handler: VJC, length: 2, mnemonic: "JC"},
+	0x24: {handler: VJNC, length: 2, mnemonic: "JNC"},
+	0x25: {handler: VJBE, length: 2, mnemonic: "JBE"},
+	0x26: {handler: VJA, length: 2, mnemonic: "JA"},
 	// stack manipulation instructions
-	0x30: {handler: VPUSH, length: 1},
-	0x31: {handler: VPOP, length: 1},
+	0x30: {handler: VPUSH, length: 1, mnemonic: "PUSH"},
+	0x31: {handler: VPOP, length: 1, mnemonic: "POP"},
 	// unconditional jumps instructions
-	0x40: {handler: VJMP, length: 2},
-	0x41: {handler: VJMPR, length: 1},
-	0x42: {handler: VCALL, length: 2},
-	0x43: {handler: VCALLR, length: 1},
-	0x44: {handler: VRET, length: 0},
+	0x40: {handler: VJMP, length: 2, mnemonic: "JMP"},
+	0x41: {handler: VJMPR, length: 1, mnemonic: "JMPR"},
+	0x42: {handler: VCALL, length: 2, mnemonic: "CALL"},
+	0x43: {handler: VCALLR, length: 1, mnemonic: "CALLR"},
+	0x44: {handler: VRET, length: 0, mnemonic: "RET"},
 	// additional instructions
-	0xF0: {handler: VCRL, length: 1 + 2},
-	0xF1: {handler: VCRS, length: 1 + 2},
-	0xF2: {handler: VOUTB, length: 1 + 1},
-	0xF3: {handler: VINB, length: 1 + 1},
-	0xF4: {handler: VIRET, length: 0},
-	0xFE: {handler: VCRSH, length: 0},
-	0xFF: {handler: VOFF, length: 0},
+	0xF0: {handler: VCRL, length: 1 + 2, mnemonic: "CRL"},
+	0xF1: {handler: VCRS, length: 1 + 2, mnemonic: "CRS"},
+	0xF2: {handler: VOUTB, length: 1 + 1, mnemonic: "OUTB"},
+	0xF3: {handler: VINB, length: 1 + 1, mnemonic: "INB"},
+	0xF4: {handler: VIRET, length: 0, mnemonic: "IRET"},
+	0xFE: {handler: VCRSH, length: 0, mnemonic: "CRSH"},
+	0xFF: {handler: VOFF, length: 0, mnemonic: "OFF"},
 }
 
 //endregion

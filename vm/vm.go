@@ -46,6 +46,8 @@ type VM struct {
 	interruptQueueMutex sync.Mutex
 
 	deferredQueue []func()
+
+	debug bool
 }
 
 func NewVM() *VM {
@@ -79,6 +81,10 @@ func NewVM() *VM {
 	vm.creg[CregIntContrl] = 0 // Maskable interrupts disabled.
 
 	return &vm
+}
+
+func (vm *VM) SetDebug(value bool) {
+	vm.debug = value
 }
 
 // crash terminates the virtual machine on critical error
@@ -175,6 +181,10 @@ func (vm *VM) processInterruptQueue() error {
 }
 
 func (vm *VM) runSingleStep() error {
+	if vm.debug {
+		fmt.Printf("debug: runSingleStep(), pc: %x\n", vm.pc.value)
+	}
+
 	// If there is any interrupt on the queue, we need to know about it now.
 	err := vm.processInterruptQueue()
 	if err != nil {
@@ -196,6 +206,9 @@ func (vm *VM) runSingleStep() error {
 	if err != nil {
 		vm.interrupt(IntMemoryError)
 		return fmt.Errorf("failed to fetch opcode: %v", err)
+	}
+	if vm.debug {
+		fmt.Printf("debug: fetched opcode %#v %#v\n", opcodeByte, opcodes[opcodeByte].mnemonic)
 	}
 
 	opcode, ok := vm.opcodes[opcodeByte]
