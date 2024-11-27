@@ -152,7 +152,7 @@ func (vm *VM) processInterruptQueue() error {
 
 	// Save context
 	tmpSp := vm.sp.value
-	registerValues := []uint32{}
+	registerValues := make([]uint32, 0)
 	for _, register := range vm.reg {
 		registerValues = append(registerValues, register.value)
 	}
@@ -162,7 +162,7 @@ func (vm *VM) processInterruptQueue() error {
 		tmpSp -= 4
 		err := vm.memory.StoreDword(uint16(tmpSp), val)
 		if err != nil {
-			// Since there is no way to save state, and therefore no way to
+			// Since there is no way to save the state, and therefore no way to
 			// recover, crash the machine.
 			vm.crash()
 			return fmt.Errorf("failed to store dword: %w", err)
@@ -181,7 +181,7 @@ func (vm *VM) runSingleStep() error {
 		return fmt.Errorf("something failed hard: %w", err)
 	}
 
-	// Check if there is anything in the defered queue. If so, process it now.
+	// Check if there is anything in the deferred queue. If so, process it now.
 	for len(vm.deferredQueue) != 0 {
 		// pop
 		q := vm.deferredQueue

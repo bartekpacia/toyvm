@@ -4,6 +4,8 @@ Pure Go implementation of a small virtual machine described in [Gynvael Coldwind
 
 # Opcodes
 
+Variable-length, little-endian.
+
 The tables of opcodes were created with Gemini 1.5 Pro with the book PDF (pages 68–89)
 attached.
 The prompt I used can be found in `prompt.txt` file.

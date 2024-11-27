@@ -168,7 +168,25 @@ func VCMP(vm *VM, args []byte) {
 
 // jump if zero
 func VJZ(vm *VM, args []byte) {
-	// TODO: Implement VJZ
+	if len(args) != 2 {
+		vm.interrupt(IntMemoryError)
+		return
+	}
+
+	// 2 bytes as args is an imm16, little-endian
+	// For example, imm16 is 2137, is 0x859, is 100001011001. In big endian it's written like:
+	// 00001000 01011001
+	// 87654321 87654321
+	// But in little-endian (as we receive it) would be:
+	// 01011001 00001000
+	// 87654321 87654321
+
+	// 01011001 00001000 -> 00001000 01011001 ???
+
+	if vm.fr&FlagZF == FlagZF {
+		diff := uint32(args[1]) + uint32(args[0])<<8
+		vm.pc.value = vm.pc.value + 3 + diff
+	}
 }
 
 // jump if equal
@@ -235,7 +253,13 @@ func VPOP(vm *VM, args []byte) {
 
 // jump
 func VJMP(vm *VM, args []byte) {
-	// TODO: Implement VJMP
+	if len(args) != 2 {
+		vm.interrupt(IntMemoryError)
+		return
+	}
+
+	diff := uint32(args[1]) + uint32(args[0])<<8
+	vm.pc.value = vm.pc.value + 3 + diff
 }
 
 // jump to address from register

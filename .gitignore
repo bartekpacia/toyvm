@@ -1,4 +1,7 @@
 .DS_Store
+.vscode/
+.idea/
+
 hello
 upper
 pit_test
