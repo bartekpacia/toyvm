@@ -1,5 +1,7 @@
 package vm
 
+import "fmt"
+
 //lint:file-ignore ST1020 documentation for instructions is in the book
 
 type InstructionHandler func(vm *VM, args []byte)
@@ -259,7 +261,22 @@ func VJMP(vm *VM, args []byte) {
 		return
 	}
 
-	diff := uint32(args[1]) + uint32(args[0])<<8
+	diff := uint32(args[1]) | uint32(args[0])<<8
+	// diff := uint32(args[0]) | uint32(args[1])<<8
+
+	if vm.debug {
+		fmt.Printf("jump by diff: %v\n", diff)
+	}
+
+	// Example: VJMP is at address 0x13, we want to jump to 0x30
+	// * VJMP opcode: 0x40
+	// * Address of instruction directly after VJMP is: 0x13 + 1 + 2 = 0x16
+	// 0x30 - 0x16 = 48 - 22 = 26 = 0x1A
+
+	// 40 1A 00
+	// which means:
+	// VJMP 0x13 + 3 + 0x1a
+
 	vm.pc.value = vm.pc.value + 3 + diff
 }
 

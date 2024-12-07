@@ -116,7 +116,7 @@ func (vm *VM) fetchPendingInterrupt() *int {
 		return nil
 	}
 
-	// In disable-interrupts state, we can process only non-maskable interrupts
+	// In the disable-interrupts state, we can process only non-maskable interrupts
 	// (faults).
 	if vm.creg[CregIntContrl]&1 == 0 {
 		// Maskable interrupts disabled. Find a non-maskable one.

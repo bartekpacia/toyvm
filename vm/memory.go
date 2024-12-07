@@ -7,7 +7,7 @@ import (
 
 var ErrInvalidAddress = errors.New("invalid address")
 
-// Memory represents little-endian RAM memory.
+// Memory represents little-endian RAM.
 type Memory struct {
 	mem []byte
 }
@@ -48,9 +48,9 @@ func (m *Memory) StoreDword(addr uint16, value uint32) error {
 	}
 
 	m.mem[int(addr)] = byte(value)
-	m.mem[int(addr)+1] = byte((value >> 8))
-	m.mem[int(addr)+2] = byte((value >> 16))
-	m.mem[int(addr)+3] = byte((value >> 24))
+	m.mem[int(addr)+1] = byte(value >> 8)
+	m.mem[int(addr)+2] = byte(value >> 16)
+	m.mem[int(addr)+3] = byte(value >> 24)
 
 	return nil
 }
