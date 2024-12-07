@@ -207,9 +207,6 @@ func (vm *VM) runSingleStep() error {
 		vm.interrupt(IntMemoryError)
 		return fmt.Errorf("failed to fetch opcode: %v", err)
 	}
-	if vm.debug {
-		fmt.Printf("debug: fetched opcode %#v %#v\n", opcodeByte, opcodes[opcodeByte].mnemonic)
-	}
 
 	opcode, ok := vm.opcodes[opcodeByte]
 	if !ok {
@@ -221,6 +218,9 @@ func (vm *VM) runSingleStep() error {
 	if err != nil {
 		vm.interrupt(IntMemoryError)
 		return fmt.Errorf("failed to fetch arg bytes: %v", err)
+	}
+	if vm.debug {
+		fmt.Printf("debug: fetched opcode %#v %#v (%d args)\n", opcodeByte, opcodes[opcodeByte].mnemonic, length)
 	}
 
 	handler := opcode.handler

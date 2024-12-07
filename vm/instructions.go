@@ -188,7 +188,7 @@ func VJZ(vm *VM, args []byte) {
 
 	if vm.fr&FlagZF == FlagZF {
 		diff := uint32(args[1]) + uint32(args[0])<<8
-		vm.pc.value = vm.pc.value + 3 + diff
+		vm.pc.value = vm.pc.value + diff
 	}
 }
 
