@@ -3,9 +3,10 @@ package vm_test
 import (
 	"bytes"
 	"fmt"
-	"github.com/bartekpacia/toyvm/vm"
 	"os"
 	"testing"
+
+	"github.com/bartekpacia/toyvm/vm"
 )
 
 type test struct {
@@ -25,6 +26,10 @@ var testCases = []test{
 	{
 		execFilename: "cmp_equal_false",
 		output:       "F",
+	},
+	{
+		execFilename: "hello",
+		output:       "Hello World\n",
 	},
 }
 

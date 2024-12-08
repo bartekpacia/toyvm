@@ -12,7 +12,7 @@ type opcode struct {
 	mnemonic string
 }
 
-//region Data copying instructions
+// region Data copying instructions
 
 // mov
 func VMOV(vm *VM, args []byte) {
@@ -68,9 +68,9 @@ func VLDB(vm *VM, args []byte) {
 func VSTB(vm *VM, args []byte) {
 }
 
-//endregion
+// endregion
 
-//region Arithmetic and logic instructions
+// region Arithmetic and logic instructions
 
 // add
 func VADD(vm *VM, args []byte) {
@@ -150,9 +150,9 @@ func VSHR(vm *VM, args []byte) {
 	// TODO: Implement VSHR
 }
 
-//endregion
+// endregion
 
-//region Comparison and conditional jumps instructions
+// region Comparison and conditional jumps instructions
 
 // compare
 func VCMP(vm *VM, args []byte) {
@@ -251,9 +251,9 @@ func VJA(vm *VM, args []byte) {
 	// TODO: Implement VJA
 }
 
-//endregion
+// endregion
 
-//region Stack manipulation instructions
+// region Stack manipulation instructions
 
 // push
 func VPUSH(vm *VM, args []byte) {
@@ -265,9 +265,9 @@ func VPOP(vm *VM, args []byte) {
 	// TODO: Implement VPOP
 }
 
-//endregion
+// endregion
 
-//region Unconditional jumps instructions
+// region Unconditional jumps instructions
 
 // jump
 func VJMP(vm *VM, args []byte) {
@@ -314,9 +314,9 @@ func VRET(vm *VM, args []byte) {
 	// TODO: Implement VRET
 }
 
-//endregion
+// endregion
 
-//region Additional instructions
+// region Additional instructions
 
 // control register load
 func VCRL(vm *VM, args []byte) {
@@ -409,4 +409,4 @@ var opcodes = map[byte]opcode{
 	0xFF: {handler: VOFF, length: 0, mnemonic: "OFF"},
 }
 
-//endregion
+// endregion
