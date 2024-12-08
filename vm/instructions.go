@@ -6,13 +6,13 @@ import "fmt"
 
 type InstructionHandler func(vm *VM, args []byte)
 
-//region Data copying instructions
-
 type opcode struct {
 	handler  InstructionHandler
 	length   int
 	mnemonic string
 }
+
+//region Data copying instructions
 
 // mov
 func VMOV(vm *VM, args []byte) {
@@ -162,6 +162,10 @@ func VCMP(vm *VM, args []byte) {
 	result := int(rdst.value) - int(rsrc.value)
 	vm.fr &= 0xfffffffc
 
+	if vm.debug {
+		fmt.Printf("VCMP: %v - %v = %v\n", rdst.value, rsrc.value, result)
+	}
+
 	if result == 0 {
 		vm.fr |= FlagZF
 	} else if result < 0 {
@@ -176,6 +180,11 @@ func VJZ(vm *VM, args []byte) {
 		return
 	}
 
+	diff := uint32(args[0]) | uint32(args[1])<<8
+	if vm.debug {
+		fmt.Printf("==> VJZ: conditional jump by diff: %x\n", diff)
+	}
+
 	// 2 bytes as args is an imm16, little-endian
 	// For example, imm16 is 2137, is 0x859, is 100001011001. In big endian it's written like:
 	// 00001000 01011001
@@ -187,14 +196,20 @@ func VJZ(vm *VM, args []byte) {
 	// 01011001 00001000 -> 00001000 01011001 ???
 
 	if vm.fr&FlagZF == FlagZF {
-		diff := uint32(args[1]) + uint32(args[0])<<8
+		if vm.debug {
+			fmt.Println("==> VJZ: condition true, increased pc by", diff)
+		}
 		vm.pc.value = vm.pc.value + diff
+	} else {
+		if vm.debug {
+			fmt.Println("==> VJZ: condition false, no-op")
+		}
 	}
 }
 
 // jump if equal
 func VJE(vm *VM, args []byte) {
-	// TODO: Implement VJE
+	VJZ(vm, args)
 }
 
 // jump if not zero
@@ -261,11 +276,10 @@ func VJMP(vm *VM, args []byte) {
 		return
 	}
 
-	diff := uint32(args[1]) | uint32(args[0])<<8
-	// diff := uint32(args[0]) | uint32(args[1])<<8
+	diff := uint32(args[0]) | uint32(args[1])<<8
 
 	if vm.debug {
-		fmt.Printf("jump by diff: %v\n", diff)
+		fmt.Printf("==> VJMP: unconditional jump by diff: %v\n", diff)
 	}
 
 	// Example: VJMP is at address 0x13, we want to jump to 0x30
@@ -277,7 +291,7 @@ func VJMP(vm *VM, args []byte) {
 	// which means:
 	// VJMP 0x13 + 3 + 0x1a
 
-	vm.pc.value = vm.pc.value + 3 + diff
+	vm.pc.value = vm.pc.value + diff
 }
 
 // jump to address from register
@@ -321,7 +335,11 @@ func VOUTB(vm *VM, args []byte) {
 
 	rsrc := args[0]
 	value := vm.reg[rsrc].value & 0xff
-	fmt.Printf("%c", value)
+	toWrite := fmt.Sprintf("%c", value)
+	_, err := vm.Stdout.Write([]byte(toWrite))
+	if err != nil {
+		vm.interrupt(IntMemoryError)
+	}
 }
 
 // input byte

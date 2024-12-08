@@ -3,6 +3,7 @@ package vm
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"sync"
 )
@@ -47,6 +48,8 @@ type VM struct {
 
 	deferredQueue []func()
 
+	Stdout io.Writer
+
 	debug bool
 }
 
@@ -79,6 +82,8 @@ func NewVM() *VM {
 		vm.creg[creg] = 0xffffffff
 	}
 	vm.creg[CregIntContrl] = 0 // Maskable interrupts disabled.
+
+	vm.Stdout = os.Stdout
 
 	return &vm
 }
