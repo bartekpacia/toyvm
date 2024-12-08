@@ -316,7 +316,12 @@ func VCRS(vm *VM, args []byte) {
 
 // output byte
 func VOUTB(vm *VM, args []byte) {
-	// TODO: Implement VOUTB
+	// TODO: Dumb implementation. A proper one should be interrupt-based.
+	//  See also: https://github.com/gynvael/zrozumiec-programowanie/blob/master/007-Czesc_II-Rozdzial_3-Podstawy_architektury_komputerowe/vm_dev_con.py
+
+	rsrc := args[0]
+	value := vm.reg[rsrc].value & 0xff
+	fmt.Printf("%c", value)
 }
 
 // input byte

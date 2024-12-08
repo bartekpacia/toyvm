@@ -220,7 +220,7 @@ func (vm *VM) runSingleStep() error {
 		return fmt.Errorf("failed to fetch arg bytes: %v", err)
 	}
 	if vm.debug {
-		fmt.Printf("debug: fetched opcode %#v %#v (%d args)\n", opcodeByte, opcodes[opcodeByte].mnemonic, length)
+		fmt.Printf("debug: fetched opcode %#02x %#v (%d args) % x\n", opcodeByte, opcodes[opcodeByte].mnemonic, length, argBytes)
 	}
 
 	handler := opcode.handler
