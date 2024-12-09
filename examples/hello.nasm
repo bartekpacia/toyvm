@@ -5,6 +5,7 @@
 vset r4, data
 vxor r0, r0
 vset r1, 1
+vset r10, 1
 print_loop:
   ; Pobierz bajt spod adresu z R0.
   vldb r2, r4
