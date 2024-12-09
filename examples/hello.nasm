@@ -1,9 +1,11 @@
 %include "vm.inc"
 
 ; Wypisz dane, znak po znaku.
+
 vset r4, data
 vxor r0, r0
 vset r1, 1
+vset r10, 1
 print_loop:
   ; Pobierz bajt spod adresu z R0.
   vldb r2, r4
@@ -12,7 +14,7 @@ print_loop:
   vcmp r2, r0
   vjz .end
 
-  ; W przeciwym wypadku, wypisz znak na konsoli.
+  ; W przeciwym wypadku, wypisz znak na konsoli. 0x20 to konsola.
   voutb 0x20, r2
 
   ; Przesuń r4 na kolejny znak i idź na początek pętli.

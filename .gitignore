@@ -2,8 +2,5 @@
 .vscode/
 .idea/
 
-hello
-upper
-pit_test
-console_test
+examples/*.bin
 toyvm

@@ -3,6 +3,7 @@ package vm
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"sync"
 )
@@ -47,6 +48,8 @@ type VM struct {
 
 	deferredQueue []func()
 
+	Stdout io.Writer
+
 	debug bool
 }
 
@@ -79,6 +82,8 @@ func NewVM() *VM {
 		vm.creg[creg] = 0xffffffff
 	}
 	vm.creg[CregIntContrl] = 0 // Maskable interrupts disabled.
+
+	vm.Stdout = os.Stdout
 
 	return &vm
 }
@@ -116,7 +121,7 @@ func (vm *VM) fetchPendingInterrupt() *int {
 		return nil
 	}
 
-	// In disable-interrupts state, we can process only non-maskable interrupts
+	// In the disable-interrupts state, we can process only non-maskable interrupts
 	// (faults).
 	if vm.creg[CregIntContrl]&1 == 0 {
 		// Maskable interrupts disabled. Find a non-maskable one.
@@ -207,9 +212,6 @@ func (vm *VM) runSingleStep() error {
 		vm.interrupt(IntMemoryError)
 		return fmt.Errorf("failed to fetch opcode: %v", err)
 	}
-	if vm.debug {
-		fmt.Printf("debug: fetched opcode %#v %#v\n", opcodeByte, opcodes[opcodeByte].mnemonic)
-	}
 
 	opcode, ok := vm.opcodes[opcodeByte]
 	if !ok {
@@ -221,6 +223,9 @@ func (vm *VM) runSingleStep() error {
 	if err != nil {
 		vm.interrupt(IntMemoryError)
 		return fmt.Errorf("failed to fetch arg bytes: %v", err)
+	}
+	if vm.debug {
+		fmt.Printf("debug: fetched opcode %#02x %#v (%d args) % x\n", opcodeByte, opcodes[opcodeByte].mnemonic, length, argBytes)
 	}
 
 	handler := opcode.handler

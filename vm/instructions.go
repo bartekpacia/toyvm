@@ -1,16 +1,18 @@
 package vm
 
+import "fmt"
+
 //lint:file-ignore ST1020 documentation for instructions is in the book
 
 type InstructionHandler func(vm *VM, args []byte)
-
-//region Data copying instructions
 
 type opcode struct {
 	handler  InstructionHandler
 	length   int
 	mnemonic string
 }
+
+// region Data copying instructions
 
 // mov
 func VMOV(vm *VM, args []byte) {
@@ -66,9 +68,9 @@ func VLDB(vm *VM, args []byte) {
 func VSTB(vm *VM, args []byte) {
 }
 
-//endregion
+// endregion
 
-//region Arithmetic and logic instructions
+// region Arithmetic and logic instructions
 
 // add
 func VADD(vm *VM, args []byte) {
@@ -148,9 +150,9 @@ func VSHR(vm *VM, args []byte) {
 	// TODO: Implement VSHR
 }
 
-//endregion
+// endregion
 
-//region Comparison and conditional jumps instructions
+// region Comparison and conditional jumps instructions
 
 // compare
 func VCMP(vm *VM, args []byte) {
@@ -159,6 +161,10 @@ func VCMP(vm *VM, args []byte) {
 
 	result := int(rdst.value) - int(rsrc.value)
 	vm.fr &= 0xfffffffc
+
+	if vm.debug {
+		fmt.Printf("VCMP: %v - %v = %v\n", rdst.value, rsrc.value, result)
+	}
 
 	if result == 0 {
 		vm.fr |= FlagZF
@@ -174,6 +180,11 @@ func VJZ(vm *VM, args []byte) {
 		return
 	}
 
+	diff := uint32(args[0]) | uint32(args[1])<<8
+	if vm.debug {
+		fmt.Printf("==> VJZ: conditional jump by diff: %x\n", diff)
+	}
+
 	// 2 bytes as args is an imm16, little-endian
 	// For example, imm16 is 2137, is 0x859, is 100001011001. In big endian it's written like:
 	// 00001000 01011001
@@ -185,14 +196,20 @@ func VJZ(vm *VM, args []byte) {
 	// 01011001 00001000 -> 00001000 01011001 ???
 
 	if vm.fr&FlagZF == FlagZF {
-		diff := uint32(args[1]) + uint32(args[0])<<8
-		vm.pc.value = vm.pc.value + 3 + diff
+		if vm.debug {
+			fmt.Println("==> VJZ: condition true, increased pc by", diff)
+		}
+		vm.pc.value = vm.pc.value + diff
+	} else {
+		if vm.debug {
+			fmt.Println("==> VJZ: condition false, no-op")
+		}
 	}
 }
 
 // jump if equal
 func VJE(vm *VM, args []byte) {
-	// TODO: Implement VJE
+	VJZ(vm, args)
 }
 
 // jump if not zero
@@ -234,9 +251,9 @@ func VJA(vm *VM, args []byte) {
 	// TODO: Implement VJA
 }
 
-//endregion
+// endregion
 
-//region Stack manipulation instructions
+// region Stack manipulation instructions
 
 // push
 func VPUSH(vm *VM, args []byte) {
@@ -248,9 +265,9 @@ func VPOP(vm *VM, args []byte) {
 	// TODO: Implement VPOP
 }
 
-//endregion
+// endregion
 
-//region Unconditional jumps instructions
+// region Unconditional jumps instructions
 
 // jump
 func VJMP(vm *VM, args []byte) {
@@ -259,8 +276,22 @@ func VJMP(vm *VM, args []byte) {
 		return
 	}
 
-	diff := uint32(args[1]) + uint32(args[0])<<8
-	vm.pc.value = vm.pc.value + 3 + diff
+	diff := uint32(args[0]) | uint32(args[1])<<8
+
+	if vm.debug {
+		fmt.Printf("==> VJMP: unconditional jump by diff: %v\n", diff)
+	}
+
+	// Example: VJMP is at address 0x13, we want to jump to 0x30
+	// * VJMP opcode: 0x40
+	// * Address of instruction directly after VJMP is: 0x13 + 1 + 2 = 0x16
+	// 0x30 - 0x16 = 48 - 22 = 26 = 0x1A
+
+	// 40 1A 00
+	// which means:
+	// VJMP 0x13 + 3 + 0x1a
+
+	vm.pc.value = vm.pc.value + diff
 }
 
 // jump to address from register
@@ -283,9 +314,9 @@ func VRET(vm *VM, args []byte) {
 	// TODO: Implement VRET
 }
 
-//endregion
+// endregion
 
-//region Additional instructions
+// region Additional instructions
 
 // control register load
 func VCRL(vm *VM, args []byte) {
@@ -299,7 +330,16 @@ func VCRS(vm *VM, args []byte) {
 
 // output byte
 func VOUTB(vm *VM, args []byte) {
-	// TODO: Implement VOUTB
+	// TODO: Dumb implementation. A proper one should be interrupt-based.
+	//  See also: https://github.com/gynvael/zrozumiec-programowanie/blob/master/007-Czesc_II-Rozdzial_3-Podstawy_architektury_komputerowe/vm_dev_con.py
+
+	rsrc := args[0]
+	value := vm.reg[rsrc].value & 0xff
+	toWrite := fmt.Sprintf("%c", value)
+	_, err := vm.Stdout.Write([]byte(toWrite))
+	if err != nil {
+		vm.interrupt(IntMemoryError)
+	}
 }
 
 // input byte
@@ -369,4 +409,4 @@ var opcodes = map[byte]opcode{
 	0xFF: {handler: VOFF, length: 0, mnemonic: "OFF"},
 }
 
-//endregion
+// endregion
