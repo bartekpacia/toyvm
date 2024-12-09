@@ -24,7 +24,7 @@ func main() {
 	machine := vm.NewVM()
 	err := machine.LoadMemoryFromFile(0, os.Args[1])
 	if err != nil {
-		log.Fatalln("failed to load memory from file: ", err)
+		log.Fatalln("failed to load memory from file:", err)
 	}
 
 	machine.SetDebug(debug)

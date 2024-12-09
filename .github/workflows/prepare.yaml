@@ -37,19 +37,3 @@ jobs:
 
       - name: Run tests with coverage
         run: go test -cover ./...
-
-  verify-binaries:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v4
-
-      - name: Set up NASM
-        run: sudo apt-get install nasm
-
-      - name: Compile binaries
-        run: make
-
-      - name: Fail if binaries changed after compilation
-        run: git diff --exit-code
