@@ -38,7 +38,7 @@ func TestVM(t *testing.T) {
 		t.Run(testCase.execFilename, func(t *testing.T) {
 			virtualMachine := vm.NewVM()
 			fmt.Println(os.Getwd())
-			err := virtualMachine.LoadMemoryFromFile(0, "../examples/"+testCase.execFilename)
+			err := virtualMachine.LoadMemoryFromFile(0, "../examples/"+testCase.execFilename+".bin")
 			if err != nil {
 				t.Errorf("failed to load memory from file: %v", err)
 				return
