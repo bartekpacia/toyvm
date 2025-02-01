@@ -2,7 +2,33 @@
 
 Pure Go implementation of a small virtual machine described in [Gynvael Coldwind's book][book].
 
-# Opcodes
+## Usage
+
+Build executable:
+
+```console
+$ go build
+```
+
+The above generates the `toyvm` executable.
+
+There are a few sample programs in [examples](./examples).
+To run them, you have to compile them first with Netwide Assembler (nasm). To do it, install nasm and then run `make`.
+
+Once you hvae the binaries, you can run a sample program:
+
+```console
+$ ./toyvm examples/hello.bin 
+Hello, World!
+```
+
+There are quite a few tests written. If not for them, I'd have lost my sanity long time ago. To run the tests:
+
+```console
+$ go test ./vm
+```
+
+# Instruction set
 
 Variable-length, little-endian.
 
@@ -20,7 +46,6 @@ The prompt I used can be found in `prompt.txt` file.
 | 03           | VST      | **store**      | `rdst`, `rsrc`  | Copies 32 bits of data from the `rsrc` register to the operating memory at the address indicated in the `rdst` register.<br>In C, this operation could be written as:<br>`*(uint32_t*)rdst = rsrc;`<br>Example: (writing the value `0x12345678` to the address `0x1234`)<br>VSET R9, `0x1234`<br>VSET R5, `0x12345678`<br>VST R9, R5<br>Machine code:<br>01 09 34 12 00 00<br>01 05 78 56 34 12<br>03 09 05                                                                                                                                                                                                                       |
 | 04           | VLDB     | **load byte**  | `rdst`, `rsrc`  | Copies 8 bits of data from the operating memory from the address indicated in the `rsrc` register to the register indicated in `rdst`.<br>In C, this operation could be written as: `rdst=*(uint8_t*)rsrc;`.<br>Example of reading 8 bits from operating memory from the address `0x1234` to the R1 register:<br>VSET R3, `0x1234`<br>VLDB R1, R3<br>Machine code:<br>01 03 34 12 00 00<br>04 01 03                                                                                                                                                                                                                               |
 | 05           | VSTB     | **store byte** | `rdst`, `rsrc`  | Copies the lower 8 bits of data from the `rsrc` register to the operating memory at the address indicated in the `rdst` register.<br>In C, this operation could be written as: `*(uint8_t*)rdst = rsrc;`<br>Example of writing byte `0x41` to the address `0x1234;`<br>VSET R1, `0x41`<br>VSET R2, `0x1234`<br>VSTB R2, R1<br>Machine code:<br>01 01 41 00 00 00<br>01 02 34 12 00 00<br>05 02 01                                                                                                                                                                                                                                 |
-
 
 ## 2. Arithmetic and logic instructions
 
@@ -61,7 +86,7 @@ Here's the fourth group of opcodes, wrapped in a Markdown table:
 
 Here's the fifth category of opcodes, formatted as you requested:
 
-# 5. Unconditional jump instructions
+## 5. Unconditional jump instructions
 
 | Opcode (hex) | Mnemonic | Description                       | Parameters | Full Description                                                                                                                                                                                                                                                                                                                                                                                              |
 |:-------------|:---------|:----------------------------------|:-----------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -73,7 +98,7 @@ Here's the fifth category of opcodes, formatted as you requested:
 
 Here's the sixth table, containing additional control instructions:
 
-# 6. Additional control instructions
+## 6. Additional control instructions
 
 | Opcode (hex) | Mnemonic | Mnemonic name in plain English | Parameters  | Full description                                                                                                                                                                                                                                                                                                             |
 |:-------------|:---------|:-------------------------------|:------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
