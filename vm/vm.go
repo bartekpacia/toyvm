@@ -4,7 +4,11 @@ package vm
 import (
 	"fmt"
 	"io"
+	"log"
 	"os"
+	"reflect"
+	"runtime"
+	"strings"
 	"sync"
 )
 
@@ -186,10 +190,6 @@ func (vm *VM) processInterruptQueue() error {
 }
 
 func (vm *VM) runSingleStep() error {
-	if vm.debug {
-		fmt.Printf("debug: runSingleStep(), pc: %x\n", vm.pc.value)
-	}
-
 	// If there is any interrupt on the queue, we need to know about it now.
 	err := vm.processInterruptQueue()
 	if err != nil {
@@ -225,13 +225,33 @@ func (vm *VM) runSingleStep() error {
 		return fmt.Errorf("failed to fetch arg bytes: %v", err)
 	}
 	if vm.debug {
-		fmt.Printf("debug: fetched opcode %#02x %#v (%d args) % x\n", opcodeByte, opcodes[opcodeByte].mnemonic, length, argBytes)
+		// fmt.Printf("debug: fetched opcode %#02x %#v (%d args) % x\n", opcodeByte, opcodes[opcodeByte].mnemonic, length, argBytes)
 	}
+
+	vm.debugLog("%#04x: %s\t % x\n", vm.pc.value, getFunctionName(opcode.handler), argBytes)
 
 	handler := opcode.handler
 	vm.pc.value = vm.pc.value + 1 + uint32(length)
 	handler(vm, argBytes)
 	return nil
+}
+
+func (vm *VM) debugLog(format string, a ...any) {
+	if vm.debug {
+		log.Printf(format, a...)
+	}
+}
+
+func (vm *VM) debugLogInstr(format string, a ...any) {
+	if vm.debug {
+		// TODO: get parent function name
+	}
+}
+
+// https://stackoverflow.com/a/70535822/7009800
+func getFunctionName(temp interface{}) string {
+	strs := strings.Split(runtime.FuncForPC(reflect.ValueOf(temp).Pointer()).Name(), ".")
+	return strs[len(strs)-1]
 }
 
 func (vm *VM) LoadMemoryFromFile(addr uint16, filename string) error {
